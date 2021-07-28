@@ -70,17 +70,12 @@ class MinMaxTree():
         for i in range(len(self.nodes)-1,-1,-1):
             for node in self.nodes[i]:
                 node.func = self.function_list[i]
-                node.evaluate(side)
+                node.evaluate(idx)
                 
     def predict(self,board,side):
         self.create_root_node(board)
         self.construct()
         self.evaluate(side)
-        pred_list = sorted(self.nodes[0], key=lambda x: x.utility)
-        effectiveness = max(pred_list)-min(pred_list))
+        pred_list = sorted(self.nodes[0], key=lambda x: x.utility,reverse = True)
+        effectiveness = pred_list[0].utility - pred_list[1].utility
         return pred_list[0].move,effectiveness
-    
-    
-tree = MinMaxTree()
-
-print(tree.predict(chess.Board(),1))

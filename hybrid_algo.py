@@ -10,7 +10,8 @@ class ChessEngine():
         moves = []
         effe = []
         for algo in self.algorithms:
-            move,effectiveness = algo.predict(board,side)
+            print(algo)
+            move,effectiveness = algo().predict(board,side)
             moves.append(move)
             effe.append(effectiveness)
         moves = np.array(moves)
