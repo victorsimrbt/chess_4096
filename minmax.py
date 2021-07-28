@@ -37,10 +37,12 @@ class Node:
             self.child_nodes.append(Node(continuations[i],legal_moves[i],self))
             
 class MinMaxTree():
-    def __init__(self,board):
+    def __init__(self):
+        pass
+
+    def create_root_node(self,board):
         root_node = Node(board,None,None)
         self.root_node = root_node
-
     def construct(self,depth = 2):   
         nodes = []
         prev_gen = [self.root_node]
@@ -68,8 +70,17 @@ class MinMaxTree():
         for i in range(len(self.nodes)-1,-1,-1):
             for node in self.nodes[i]:
                 node.func = self.function_list[i]
-                node.evaluate(idx)
+                node.evaluate(side)
                 
-    def predict(self):
+    def predict(self,board,side):
+        self.create_root_node(board)
+        self.construct()
+        self.evaluate(side)
         pred_list = sorted(self.nodes[0], key=lambda x: x.utility)
-        return pred_list[0].move
+        effectiveness = max(pred_list)-min(pred_list))
+        return pred_list[0].move,effectiveness
+    
+    
+tree = MinMaxTree()
+
+print(tree.predict(chess.Board(),1))
