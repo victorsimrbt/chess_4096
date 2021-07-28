@@ -76,6 +76,6 @@ class MinMaxTree():
         self.create_root_node(board)
         self.construct()
         self.evaluate(side)
-        pred_list = sorted(self.nodes[0], key=lambda x: x.utility,reverse = True)
-        effectiveness = pred_list[0].utility - pred_list[1].utility
+        pred_list = sorted(self.nodes[0], key=lambda x: x.utility,reverse = False)
+        effectiveness = pred_list[0].utility - pred_list[-1].utility
         return pred_list[0].move,effectiveness

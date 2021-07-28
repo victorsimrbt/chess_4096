@@ -19,6 +19,7 @@ class ChessEngine():
         idx = np.argmax(effe)
         
         print('Algorithm Used:',self.algorithms[idx].__name__)
+        print(effe)
         return moves[np.argmax(effe)]
             
 
