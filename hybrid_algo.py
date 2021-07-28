@@ -10,12 +10,15 @@ class ChessEngine():
         moves = []
         effe = []
         for algo in self.algorithms:
-            print(algo)
             move,effectiveness = algo().predict(board,side)
             moves.append(move)
             effe.append(effectiveness)
         moves = np.array(moves)
         effe = np.array(effe)
+        
+        idx = np.argmax(effe)
+        
+        print('Algorithm Used:',self.algorithms[idx].__name__)
         return moves[np.argmax(effe)]
             
 
