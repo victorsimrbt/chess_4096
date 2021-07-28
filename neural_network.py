@@ -10,6 +10,7 @@ class NeuralNetwork():
     def __init__(self):
         self.optimizer = 'Adam'
         self.loss = 'categorical_crossentropy'
+        
     def define(self):
         input_layer= Input(shape=(8,8,12))
         x = Conv2D(filters=64,kernel_size = 2,strides = (2,2))(input_layer)

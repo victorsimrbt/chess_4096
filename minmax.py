@@ -43,6 +43,7 @@ class MinMaxTree():
     def create_root_node(self,board):
         root_node = Node(board,None,None)
         self.root_node = root_node
+        
     def construct(self,depth = 2):   
         nodes = []
         prev_gen = [self.root_node]
@@ -77,5 +78,5 @@ class MinMaxTree():
         self.construct()
         self.evaluate(side)
         pred_list = sorted(self.nodes[0], key=lambda x: x.utility,reverse = False)
-        effectiveness = pred_list[0].utility - pred_list[-1].utility
+        effectiveness = abs(pred_list[0].utility - pred_list[-1].utility)
         return pred_list[0].move,effectiveness
