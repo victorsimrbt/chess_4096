@@ -1,5 +1,6 @@
 from neural_network import *  
 from minmax import *
+import random
 
 class ChessEngine():
     
@@ -8,22 +9,19 @@ class ChessEngine():
     
     def generate_move(self,board,side):
         moves = []
-        effe = []
-        for algo in self.algorithms:
-            try:
-                move,effectiveness = algo().predict(board,side)
-            except:
-                pass
+        effes = []
+        for algorithm in self.algorithms:
+            move,effe = algorithm().predict(board,side)
             moves.append(move)
-            effe.append(effectiveness)
-        moves = np.array(moves)
-        effe = np.array(effe)
+            effes.append(effe)
+            
+        effes = np.array(effes)
+        idx = np.argmax(effes)
         
-        idx = np.argmax(effe)
-        
-        print('Algorithm Used:',self.algorithms[idx].__name__)
-        print(effe)
-        return moves[np.argmax(effe)]
+        final_move = moves[idx]
+        print(self.algorithms[idx])
+        print(effes)
+        return final_move
             
 
         

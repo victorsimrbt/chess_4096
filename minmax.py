@@ -17,6 +17,9 @@ def pos_cont(board):
         boards.append(copy_board)
     return boards,legal_moves
 
+def is_attacked(board):
+    chess.BaseBoard
+
 class Node:
     def __init__(self,board,move,parent):
         self.board = board
@@ -28,11 +31,13 @@ class Node:
         
     def evaluate(self,idx):
         if len(self.child_nodes) == 0:
-            white,black = material_counter(self.board)
+            material = material_counter(self.board)
+            white = material[0]
+            black = material[1]
             if idx == 0:
-                self.utility = white - black
-            else:
                 self.utility = black - white
+            else:
+                self.utility = white - black
         else:
             child_util = [node.utility for node in self.child_nodes]
             self.utility = self.func(child_util)
@@ -50,7 +55,7 @@ class MinMaxTree():
         root_node = Node(board,None,None)
         self.root_node = root_node
         
-    def construct(self,depth = 3):   
+    def construct(self,depth = 2):   
         nodes = []
         prev_gen = [self.root_node]
         
@@ -92,12 +97,16 @@ class MinMaxTree():
                 node.evaluate(idx)
                 
     def predict(self,board,side,depth = 3):
+        func = np.argmax
         self.create_root_node(board)
         #print('Root Node Created')
         self.construct(depth = depth)
         #print('Tree Constructed')
         self.evaluate(side)
         #print('Evaluation Complete')
-        pred_list = sorted(self.nodes[0], key=lambda x: x.utility,reverse = False)
-        effectiveness = abs(pred_list[0].utility - pred_list[-1].utility)
-        return pred_list[0].move,effectiveness
+        utilities = [node.utility for node in self.nodes[0]]
+        effe = func(utilities)
+        move = self.nodes[0][func(utilities)].move
+        if 'x' in board.san(move):
+            effe = 1
+        return move,effe
