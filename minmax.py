@@ -28,12 +28,13 @@ class Node:
         
     def evaluate(self,idx):
         if len(self.child_nodes) == 0:
-            self.utility = material_counter(self.board)
+            white,black = material_counter(self.board)
+            if idx == 0:
+                self.utility = white - black
+            else:
+                self.utility = black - white
         else:
-            try:
-                child_util = [child_node.utility[idx] for child_node in self.child_nodes]
-            except:
-                child_util = [0]
+            child_util = [node.utility for node in self.child_nodes]
             self.utility = self.func(child_util)
             
     def extend(self):
@@ -65,7 +66,10 @@ class MinMaxTree():
         # self.function_list = np.array([[] + [max,min] for _ in range(depth//2)]).flatten()
         
         function_list = []
-        funcs = [max,min]
+        if depth % 2 == 0:
+            funcs = [max,min]
+        else:
+            funcs = [min,max]
         for i in range(depth):
             func = funcs[i%2]
             function_list.append(func)
@@ -81,8 +85,8 @@ class MinMaxTree():
             idx = 1
             
         for i in range(len(self.nodes)-1,-1,-1):
-            print('Evaluating Node',i)
-            print('Number of Nodes in layer',len(self.nodes[i]))
+            #print('Evaluating Node',i)
+            #print('Number of Nodes in layer',len(self.nodes[i]))
             for node in self.nodes[i]:
                 node.func = self.function_list[i]
                 node.evaluate(idx)
