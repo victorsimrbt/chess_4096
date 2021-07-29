@@ -23,14 +23,19 @@ class Node:
         self.move = move
         self.parent_node = parent
         self.child_nodes = []
-        self.utility = 0
+        self.utility = [0,0]
         self.func = None
+        
     def evaluate(self,idx):
         if len(self.child_nodes) == 0:
             self.utility = material_counter(self.board)
         else:
-            child_util = [child_node.utility[idx] for child_node in self.child_nodes]
+            try:
+                child_util = [child_node.utility[idx] for child_node in self.child_nodes]
+            except:
+                child_util = [0]
             self.utility = self.func(child_util)
+            
     def extend(self):
         continuations,legal_moves = pos_cont(self.board)
         for i in range(len(continuations)):
@@ -44,7 +49,7 @@ class MinMaxTree():
         root_node = Node(board,None,None)
         self.root_node = root_node
         
-    def construct(self,depth = 2):   
+    def construct(self,depth = 3):   
         nodes = []
         prev_gen = [self.root_node]
         
@@ -57,7 +62,14 @@ class MinMaxTree():
             nodes.append(prev_gen)
             
         self.nodes = nodes
-        self.function_list = np.array([[] + [max,min] for _ in range(depth//2)]).flatten()
+        # self.function_list = np.array([[] + [max,min] for _ in range(depth//2)]).flatten()
+        
+        function_list = []
+        funcs = [max,min]
+        for i in range(depth):
+            func = funcs[i%2]
+            function_list.append(func)
+        self.function_list = function_list
         
 
         return self.root_node
@@ -69,14 +81,19 @@ class MinMaxTree():
             idx = 1
             
         for i in range(len(self.nodes)-1,-1,-1):
+            print('Evaluating Node',i)
+            print('Number of Nodes in layer',len(self.nodes[i]))
             for node in self.nodes[i]:
                 node.func = self.function_list[i]
                 node.evaluate(idx)
                 
-    def predict(self,board,side):
+    def predict(self,board,side,depth = 3):
         self.create_root_node(board)
-        self.construct()
+        #print('Root Node Created')
+        self.construct(depth = depth)
+        #print('Tree Constructed')
         self.evaluate(side)
+        #print('Evaluation Complete')
         pred_list = sorted(self.nodes[0], key=lambda x: x.utility,reverse = False)
         effectiveness = abs(pred_list[0].utility - pred_list[-1].utility)
         return pred_list[0].move,effectiveness
